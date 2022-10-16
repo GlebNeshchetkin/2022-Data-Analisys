@@ -1,0 +1,14 @@
+stages:
+  preprocess:
+    cmd: python .\src\data\make_dataset.py '.\data\raw\train.csv', '.\data\interim\train.pkl',
+      '.\data\interim\target.pkl'
+  featurizing:
+    cmd: python .\src\features\build_features.py '.\data\interim\train.pkl', '.\data\processed\train.pkl'
+  train_model:
+    cmd: python .\src\models\train_model.py '.\data\processed\train.pkl', '.\data\processed\target.pkl',
+      '.\models\model.pkl', '.\data\data_to_evaluate_model\data.pkl', '.\data\data_to_evaluate_model\target.pkl'
+  evaluate:
+    cmd: python .\src\models\evaluate.py '.\models\model.pkl', '.\data\data_to_evaluate_model\data.pkl',
+      '.\data\data_to_evaluate_model\target.pkl', '.\models\evaluation_catboost.json'
+  prediction:
+    cmd: python .\src\models\predict_model.py '.\models\model.pkl', '.\data\raw\test.csv', '.\data\predicted\data.pkl', '.\data\predicted\prediction.pkl'

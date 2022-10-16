@@ -1,6 +1,6 @@
 
 import sys
-sys.path.append('../../src/')
+sys.path.append('src/')
 import click
 import logging
 from pathlib import Path
@@ -19,6 +19,8 @@ from sklearn.multioutput import MultiOutputClassifier
 from catboost import CatBoostClassifier
 import pickle
 from sklearn.metrics import precision_score
+from catboost import CatBoostClassifier, Pool
+from sklearn.model_selection import GridSearchCV
 
 @click.command()
 @click.argument('input_filepath_train', type=click.Path(exists=True))
@@ -31,32 +33,16 @@ def main(input_filepath_train, input_filepath_target, output_filepath_model, eva
         cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info('train model')
     
     train = pd.read_pickle(input_filepath_train)
     target = pd.read_pickle(input_filepath_target)
     
     X_train, X_test, y_train, y_test = train_test_split(train, target, test_size=0.4, random_state=0)
     
-    real_pipe = Pipeline([('scaler', StandardScaler())])
-    cat_pipe = Pipeline([('ohe', OneHotEncoder(handle_unknown='ignore',sparse=False))])
-    
     cat_features__=[i for i in X_train.columns if X_train.dtypes[i]=='category']
     cat_features_=[i for i in range(len(X_train.columns)) if X_train.dtypes[X_train.columns[i]]=='category']
-    
-    preprocess_pipe = ColumnTransformer(transformers=[
-        ('real_cols', real_pipe, REAL_COLS),
-        ('cat_cols', cat_pipe, cat_features__),
-        ('cat_bost_cols', CountEncoder(), cat_features__), ##cat_features
-    ])
-    
-    model_ltb = ltb.LGBMClassifier(
-        boosting_type ='dart',
-        num_leaves = 20,
-        learning_rate = 0.01,
-        n_estimators = 500
-    )
-    
+
     model_catboost = CatBoostClassifier(
         iterations=1000, 
         loss_function='MultiLogloss', 
@@ -70,15 +56,13 @@ def main(input_filepath_train, input_filepath_target, output_filepath_model, eva
         store_all_simple_ctr = True,
         silent = True
     )
-
-    model_pipe = Pipeline([('preprocess', preprocess_pipe),('model', model_catboost)])
-    pipline_catboost = MultiOutputClassifier(model_pipe, n_jobs=4)
-    pipline_catboost.fit(X_train, y_train)
-    preds_class = pipline_catboost.predict(X_test)
-    print(preds_class)
-    y_test_array = y_test.to_numpy()
-    print(precision_score(y_test_array, preds_class, average='micro'))
-    pickle.dump(pipline_catboost, open(output_filepath_model, 'wb'))
+    
+    train_pool = Pool(X_train, 
+                  y_train,
+                  cat_features_)
+    
+    model_catboost.fit(train_pool)
+    pickle.dump( model_catboost, open(output_filepath_model, 'wb'))
     save_as_pickle(X_test, evaluate_test_output_data)
     save_as_pickle(y_test, evaluate_test_output_target)
 

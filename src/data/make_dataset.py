@@ -1,6 +1,6 @@
 
 import sys
-sys.path.append('../../src/')
+sys.path.append('src/')
 import click
 import logging
 from pathlib import Path

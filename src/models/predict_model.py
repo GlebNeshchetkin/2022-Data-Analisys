@@ -1,8 +1,8 @@
 
 import sys
-sys.path.append('../../src/')
-sys.path.append('../../src/data')
-sys.path.append('../../src/features')
+sys.path.append('src/')
+sys.path.append('src/data')
+sys.path.append('src/features')
 import click
 import logging
 from pathlib import Path
@@ -22,20 +22,14 @@ from config import TARGET_COLS
 @click.argument('output_path_data', type=click.Path())
 @click.argument('output_path_prediction', type=click.Path())
 def main(model_filepath, test_data_filepath, output_path_data, output_path_prediction):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
     logger = logging.getLogger(__name__)
     logger.info('making prediction for test data')
     
     X_test = pd.read_csv(test_data_filepath)
     X_test = preprocess_data(X_test)
     X_test = featurize_data(X_test)
-    print('ok')
     pickled_model = pickle.load(open(model_filepath, 'rb'))
-    print('ok1')
     preds_class = pickled_model.predict(X_test)
-    print('ok2')
     df = pd.DataFrame(preds_class, columns = TARGET_COLS)
     
     save_as_pickle(df, output_path_prediction)

@@ -1,6 +1,6 @@
 
 import sys
-sys.path.append('../../src/')
+sys.path.append('src/')
 import click
 import logging
 from pathlib import Path
@@ -17,11 +17,9 @@ import json
 @click.argument('target_data_filepath', type=click.Path())
 @click.argument('output_path', type=click.Path())
 def main(model_filepath, train_data_filepath, target_data_filepath, output_path):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
+
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info('model evaluation')
     
     X_test = pd.read_pickle(train_data_filepath)
     y_test = pd.read_pickle(target_data_filepath)
@@ -43,6 +41,8 @@ def main(model_filepath, train_data_filepath, target_data_filepath, output_path)
         "Accuracy Score": accuracy,
         "ROC AUC Score": rocauc
     }
+    
+    
     
     json_object = json.dumps(metrics_dictionary, indent=4)
  

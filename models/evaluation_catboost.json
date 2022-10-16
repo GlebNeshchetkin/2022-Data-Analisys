@@ -1,0 +1,7 @@
+{
+    "Model Name": "CatBoostClassifier",
+    "Precision Score": 0.7157360406091371,
+    "Recall Score": 0.42857142857142855,
+    "Accuracy Score": 0.5261780104712042,
+    "ROC AUC Score": 0.6965754043552905
+}
