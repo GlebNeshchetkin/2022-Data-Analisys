@@ -9,7 +9,6 @@ def leads_healthy_lifestyle(data: pd.DataFrame) -> None:
     data['leads_healthy_lifestyle'] = 0
     for i in range(len(data['Статус Курения'])):
         if data['Статус Курения'][i] == 'Никогда не курил(а)' and data['Алкоголь'][i] == 'никогда не употреблял':
-            print(i)
             data['leads_healthy_lifestyle'][i] = 0
         else:
             data['leads_healthy_lifestyle'][i] = 1
