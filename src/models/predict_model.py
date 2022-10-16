@@ -10,8 +10,7 @@ from dotenv import find_dotenv, load_dotenv
 from utils import save_as_pickle
 import pandas as pd
 import pickle
-from sklearn.metrics import recall_score, precision_score, accuracy_score, roc_auc_score
-from preprocess import preprocess_data, preprocess_target, extract_target
+from preprocess import preprocess_data
 from featurization import featurize_data
 import json
 from config import TARGET_COLS

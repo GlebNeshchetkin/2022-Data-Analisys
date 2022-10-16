@@ -8,19 +8,11 @@ from dotenv import find_dotenv, load_dotenv
 from utils import save_as_pickle
 from config import REAL_COLS
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
 import lightgbm as ltb
-from category_encoders.count import CountEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.multioutput import MultiOutputClassifier
 from catboost import CatBoostClassifier
 import pickle
-from sklearn.metrics import precision_score
 from catboost import CatBoostClassifier, Pool
-from sklearn.model_selection import GridSearchCV
 
 @click.command()
 @click.argument('input_filepath_train', type=click.Path(exists=True))
