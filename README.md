@@ -2,8 +2,13 @@ Laboratory work 1
 ==============================
 
 1. Важная метрика при оценке модели - Recall, так как в этой задаче важно ее максимизировать, чтобы в случае, если болезнь существует, она была обнаружена с большей вероятностью.
-
-A short description of the project.
+2. Препроцессинг (\src\data\make_dataset.py)
+3. Разделение данных train/val происходит перед обучением модели (\src\models\train_model.py). Для CatBoost модели проводится тюнинг параметров отвечающих за работу с категориями Catboost.
+4. Генерация признаков (\src\features\build_features.py)
+5. Обучение модели (\src\models\train_model.py). Для модели lightgbm создан sklearn pipeline (\src\models\scikit_pipelines.py) с использованием CountEncoder() (из CategoricalEncoders).
+6. Оценка модели (\src\models\evaluate.py). Значения метрик приведены в \models\evaluation_catboost.json для CatBoost и \models\evaluation_ltb.json для lightgbm модели.
+7. Предсказание (инференс) модели на новых данных (\src\models\predict_model.py). Результаты предсказания - в \data\predicted\prediction.pkl.
+8. dvc.yaml файл содержит все stages и команды.
 
 Project Organization
 ------------
